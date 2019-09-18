@@ -76,8 +76,31 @@ export default {
       //  this.$refs:获取（对象实例）DOM对象
       // 只有一切的校验通过之后 才会进行请求
       // validate 是一个方法 => 方法中传入的一个函数 两个校验参数  是否校验成功(有用)/未校验成功的字段(鸡肋)
-      this.$refs.myForm.validate(function (isOK) {
-        isOK ? console.log('校验成功') : console.log('校验失败')
+      this.$refs.myForm.validate((isOK) => {
+      //   isOK ? console.log('校验成功') : console.log('校验失败')
+        if (isOK) {
+          // 校验成功以后，根据接口文件，请求接口
+          this.$axios({
+            url: '/authorizations',
+            methods: 'post',
+            data: this.loginForm // loginForm中包括 mobile code
+            // 成功在 then 中输出========失败在 catch 中输出
+          }).then(result => {
+            // 将后台返回的token令牌存储到前端缓存中
+            // localStorage.setItem(键,值（只能存储字符串）)；
+            // -----键：可以放入任何数据类型
+            // -----值：只能存储字符串
+            // 注意： 如果存储的是对象之类的复杂类型，要先把复杂类型转换为JSON格式的字符串，再存进去，
+            window.localStorage.setItem('user-token', result.data.data.token)
+            this.$router.push('/home') // 跳转到主页
+          }).catch(() => {
+            // 提示消息：用elementUI提示模板设置
+            this.$message({
+              type: 'warning',
+              message: '您的手机号或者验证码错误'
+            })
+          })
+        }
       })
     }
   },
