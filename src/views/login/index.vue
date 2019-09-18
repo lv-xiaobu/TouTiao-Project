@@ -1,6 +1,6 @@
 <template>
   <div>
-我是主题
+我是登录
   </div>
 </template>
 
