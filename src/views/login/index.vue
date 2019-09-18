@@ -6,22 +6,24 @@
            <img src="../../assets/img/logo_index.png" alt="">
         </div>
         <!-- 表单====>  el-form包裹 -->
-        <el-form style="margin-top='20px'">
-           <el-form-item>
+        <!-- 数据校验 => el-form 1、绑定表单数据 model 2、绑定数据校验规则 rules-->
+        <el-form :model='loginForm' :rules='loginRules' style="margin-top='20px'" ref="">
+           <!-- form-item 下面有一个prop属性 绑定下面表单组件 loginForm 下的对应的属性，才可以完成校验  -->
+           <el-form-item prop='mobile'>
               <!-- 手机号 绑定 v-model-->
               <el-input v-model="loginForm.mobile" placeholder="请输入手机号"></el-input>
            </el-form-item>
 
-           <el-form-item>
+           <el-form-item prop='code'>
               <!-- 验证码 -->
-              <el-input style="width:65%" placeholder="验证码"></el-input>
+              <el-input v-model="loginForm.code" style="width:65%" placeholder="验证码"></el-input>
               <!-- 发送验证码 -->
               <el-button style="float:right">发送验证码</el-button>
            </el-form-item>
 
-           <el-form-item>
-            <!-- 同意选型 -->
-              <el-checkbox>我已阅读并同意用户协议和隐私条款</el-checkbox>
+           <el-form-item prop='agree'>
+            <!-- 同意选项 -->
+              <el-checkbox v-model="loginForm.agree">我已阅读并同意用户协议和隐私条款</el-checkbox>
            </el-form-item>
 
            <el-form-item>
@@ -37,10 +39,13 @@
 export default {
   data () {
     return {
-      loginFrom: {
+      loginForm: { // 表单数据
         mobile: '', // 手机号
         code: '', // 验证码
-        agree: false // 选项
+        agree: false // 是否同意协议
+      },
+      loginRules: { // 表单规则对象集合
+
       }
     }
   },
