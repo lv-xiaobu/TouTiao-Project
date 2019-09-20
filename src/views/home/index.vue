@@ -3,18 +3,18 @@
   <el-container>
 
     <!-- 先放置一个左侧 -->
-    <el-aside>
-
+    <el-aside style="width:200px;overflow:hidden;background-color:#323745">
       <!-- 左侧导航组件 -->
       <layout-aside></layout-aside>
-
     </el-aside>
 
     <!-- 右侧大容器 -->
     <el-container>
 
       <!-- 头部 -->
-      <el-header>头部</el-header>
+      <el-header>
+        <layout-header></layout-header>
+      </el-header>
 
       <!-- 中部区域 -->
       <el-main>
@@ -31,6 +31,7 @@
 
 <script>
 import layoutAside from '../../components/home/layout-aside'
+import layoutHeader from '../../components/home/layout-header'
 export default {
   data () {
     return {
@@ -41,7 +42,8 @@ export default {
 
   },
   components: {
-    'layout-aside': layoutAside
+    'layout-aside': layoutAside,
+    'layout-header': layoutHeader
   }
 }
 </script>
