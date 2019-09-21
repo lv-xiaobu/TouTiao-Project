@@ -13,7 +13,7 @@
        <!-- 下拉菜单组件 el-dropdown -->
       <el-dropdown trigger="click">
         <!-- 匿名插槽 -->
-        <span class="el-dropdown-link">百变小王
+        <span class="el-dropdown-link">{{userInfo.name}}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <!-- 具名插槽 -->
@@ -36,7 +36,20 @@ export default {
     }
   },
   methods: {
-
+    // =====获取用户个人信息======
+    getUserInfo () {
+      let token = window.localStorage.getItem('user-token')
+      this.$axios({
+        url: '/user/profile',
+        // 接口要求:添加令牌
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(result => {
+        this.userInfo = result.data.data // 接收对象
+      })
+    }
+  },
+  created () {
+    this.getUserInfo()
   },
   components: {
 

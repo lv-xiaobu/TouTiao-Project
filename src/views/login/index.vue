@@ -81,8 +81,8 @@ export default {
         if (isOK) {
           // 校验成功以后，根据接口文件，请求接口
           this.$axios({
+            method: 'post',
             url: '/authorizations',
-            methods: 'post',
             data: this.loginForm // loginForm中包括 mobile code
             // 成功在 then 中输出========失败在 catch 中输出
           }).then(result => {
@@ -103,9 +103,6 @@ export default {
         }
       })
     }
-  },
-  components: {
-
   }
 }
 </script>
