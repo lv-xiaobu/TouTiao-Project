@@ -27,7 +27,7 @@
           <el-menu-item index="1-3">评论列表</el-menu-item>
           <el-menu-item index="1-3">素材管理</el-menu-item>
       </el-submenu>
-      <el-submenu>
+      <el-submenu index='2'>
           <!-- title插槽时submenu 中显示的一级内容 -->
           <template slot='title'>
               <i class='el-icon-s-custom'></i>
