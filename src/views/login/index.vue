@@ -85,13 +85,14 @@ export default {
             url: '/authorizations',
             data: this.loginForm // loginForm中包括 mobile code
             // 成功在 then 中输出========失败在 catch 中输出
+            // 在 axios.config.js 中做了响应拦截器，使result.data.data => result.data
           }).then(result => {
             // 将后台返回的token令牌存储到前端缓存中
             // localStorage.setItem(键,值（只能存储字符串）)；
             // -----键：可以放入任何数据类型
             // -----值：只能存储字符串
             // 注意： 如果存储的是对象之类的复杂类型，要先把复杂类型转换为JSON格式的字符串，再存进去，
-            window.localStorage.setItem('user-token', result.data.data.token)
+            window.localStorage.setItem('user-token', result.data.token)
             this.$router.push('/home') // 跳转到主页
           }).catch(() => {
             // 提示消息：用elementUI提示模板设置
