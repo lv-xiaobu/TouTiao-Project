@@ -94,12 +94,6 @@ export default {
             // 注意： 如果存储的是对象之类的复杂类型，要先把复杂类型转换为JSON格式的字符串，再存进去，
             window.localStorage.setItem('user-token', result.data.token)
             this.$router.push('/home') // 跳转到主页
-          }).catch(() => {
-            // 提示消息：用elementUI提示模板设置
-            this.$message({
-              type: 'warning',
-              message: '您的手机号或者验证码错误'
-            })
           })
         }
       })
