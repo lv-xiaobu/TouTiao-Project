@@ -47,9 +47,11 @@ export default {
         this.userInfo = result.data.data // 接收对象
       })
     },
+    // 公共点击事件
     commonClick (key) {
       if (key === 'account') {
         // 账户信息
+        this.$router.push('/home/account')
       } else if (key === 'git') {
         // 去项目git地址
         window.location.href = 'https://github.com/lv-xiaobu/TouTiao-Project.git'
