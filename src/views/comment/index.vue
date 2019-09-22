@@ -23,6 +23,17 @@
         </template>
         </el-table-column>
      </el-table>
+     <!-- 分页 -->
+     <el-row type='flex' justify='center' style="margin:20px 0">
+        <el-pagination
+        @current-change="changePage"
+        :current-page='page.currentPage'
+        :page-size='page.pageSize'
+        background
+        layout="prev, pager, next"
+        :total="page.total">
+        </el-pagination>
+     </el-row>
   </el-card>
 </template>
 
@@ -30,22 +41,37 @@
 export default {
   data () {
     return {
-      list: []
+      list: [],
+      page: {
+        total: 0, // 总条数
+        currentPage: 1, // 默认第一页
+        pageSize: 10 // 每页多少条
+      }
     }
   },
   methods: {
+    // ===== 获取评论列表
     getComment () {
       this.$axios({
         url: '/articles',
-        params: { response_type: 'comment' } // 路径参数 也是query参数
+        params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize } // 路径参数 也是query参数
       }).then(result => {
         this.list = result.data.results
+        this.page.total = result.data.total_count // 把总条数给 分页组件的总条数
       })
     },
     stateFormatter (row, column, cellValue, index) {
       return cellValue ? '正常' : '关闭'
     },
 
+    // ===== 分页：@自定义事件
+    // this.$emit("事件名",newpage1,newpage2)
+    changePage (newPage) {
+      this.page.currentPage = newPage // 更新最新页码给 currernpage
+      this.getComment()
+    },
+
+    // ===== 打开或者关闭  row 当前行数据
     closeOrOpen (row) {
       let mess = row.comment_status ? '关闭' : '打开' // 得到打开或者关闭
       this.$confirm(`您确定要${mess}评论?`).then(() => {
