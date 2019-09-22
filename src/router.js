@@ -25,6 +25,9 @@ export default new Router({
         }, {
           path: 'comment', // 评论列表路径
           component: () => import('./views/comment')
+        }, {
+          path: 'material', // 素材列表路径
+          component: () => import('./views/material')
         }]
     }, {
       // 一级路由：登录页面
