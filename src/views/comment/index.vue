@@ -6,6 +6,15 @@
      <!-- 面包屑的插槽 -->
      <template slot="title">评论列表</template>
      </bread-crumb>
+     <!-- el-table：表格 -->
+     <el-table :data='list'>
+        <!-- 列  属性 prop => 字段名 label => 表头-->
+        <el-table-column width='600px' label='标题' prop='title'></el-table-column>
+        <el-table-column align='center' label='评论状态' prop='comment_status'></el-table-column>
+        <el-table-column align='center' label='总评论数' prop='total_comment_count'></el-table-column>
+        <el-table-column align='center' label='粉丝评论数' prop='fans_comment_count'></el-table-column>
+        <el-table-column align='center' label='操作'></el-table-column>
+     </el-table>
   </el-card>
 </template>
 
@@ -13,11 +22,21 @@
 export default {
   data () {
     return {
-
+      list: []
     }
   },
   methods: {
-
+    gitComment () {
+      this.$axios({
+        url: '/articles',
+        params: { response_type: 'comment' } // 路径参数 也是query参数
+      }).then(result => {
+        this.list = result.data.results
+      })
+    }
+  },
+  created () {
+    this.gitComment()
   },
   components: {
 
