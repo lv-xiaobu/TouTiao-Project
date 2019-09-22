@@ -1,5 +1,10 @@
 <template>
-  <el-card>
+   <!-- v-loading:加载特效 -->
+  <el-card
+     v-loading='loading'
+     element-loading-text="丫的，等一会儿"
+     element-loading-spinner="el-icon-loading"
+     element-loading-background="rgba(0, 0, 0, 0.8)">
      <!-- 面包屑组件 -->
      <!-- el-card的插槽 -->
      <bread-crumb slot="header">
@@ -46,18 +51,23 @@ export default {
         total: 0, // 总条数
         currentPage: 1, // 默认第一页
         pageSize: 10 // 每页多少条
-      }
+      },
+      loading: false // 定义一个变量loading
     }
   },
   methods: {
     // ===== 获取评论列表
     getComment () {
+      //  发送请求前 显示进度特效
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize } // 路径参数 也是query参数
       }).then(result => {
         this.list = result.data.results
         this.page.total = result.data.total_count // 把总条数给 分页组件的总条数
+        // 请求结束时，关闭进度特效
+        this.loading = false
       })
     },
     stateFormatter (row, column, cellValue, index) {
