@@ -15,4 +15,9 @@ axios.interceptors.request.use(function (config) {
   // 对请求失败做处理
   return Promise.reject(error)
 })
-export default axios
+// export default axios
+export default {
+  install (Vue) {
+    Vue.prototype.$axios = axios // axios赋值给全局属性
+  }
+}
