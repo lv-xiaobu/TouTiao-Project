@@ -17,7 +17,7 @@
            <!-- 作用域插槽 => 接收 el-table-column row/column/$index/store -->
          <template slot-scope="obj">
            <el-button size='small' type='text'>修改</el-button>
-           <el-button @click="closeOrOpen(obg.row)" size='small' type='text'>{{
+           <el-button :style="{color: obj.row.comment_status ? '#E6A23C' : '#409EFF' }" @click="closeOrOpen(obj.row)" size='small' type='text'>{{
              obj.row.comment_status ? "关闭评论" : '打开评论'
            }}</el-button>
         </template>
@@ -34,7 +34,7 @@ export default {
     }
   },
   methods: {
-    gitComment () {
+    getComment () {
       this.$axios({
         url: '/articles',
         params: { response_type: 'comment' } // 路径参数 也是query参数
@@ -53,7 +53,7 @@ export default {
         this.$axios({
           url: 'comments/status', // 地址
           method: 'put',
-          params: { article_id: row.id }, // 路径参数
+          params: { article_id: row.id.toString() }, // 路径参数
           data: { allow_comment: !row.comment_status } // body参数  调用状态和当前状态是反着的 所以取反
         }).then(() => {
           // 成功之后一定会进入then
@@ -64,7 +64,7 @@ export default {
   },
 
   created () {
-    this.gitComment()
+    this.getComment()
   },
   components: {
 

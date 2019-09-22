@@ -1,10 +1,17 @@
 // 负责对axios进行处理
 import axios from 'axios'
-import Message from 'element-ui'
+import { Message } from 'element-ui'
 import router from '../permission'
+import jsonBig from 'json-bigint'
 
 // ===== 将地址的常态值设置给bsesURL
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+
+// ===== 统一处理大数字类型
+axios.defaults.transformResponse = [function (data) {
+  // data 是响应回来的字符串
+  return jsonBig.parse(data) // 换了一个转换方法 使得 使得更准确 保证id不会失真
+}]
 
 // ===== 请求拦截 请求到达后台之前
 axios.interceptors.request.use(function (config) {
@@ -23,6 +30,7 @@ axios.interceptors.response.use(function (response) {
   // 对响应数据做处理 执行成功时进入
   return response.data ? response.data : {}
 }, function (error) {
+  debugger
   // 执行失败时执行
   let status = error.response.status // 获取失败的状态码
   let message = '未知错误'
@@ -50,6 +58,7 @@ axios.interceptors.response.use(function (response) {
   Message({ message, type: 'warning' })
   //   希望 在异常处理函数中将所有的错误都处理完毕 不再进入catch  终止错误
   // return new Promise(function () {}) // 终止当前的错误
+  // return Promise.rejected('error')
 })
 
 // export default axios // 注册axios的第一种方式
