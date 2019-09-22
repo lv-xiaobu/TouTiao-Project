@@ -10,10 +10,13 @@
      <el-table :data='list'>
         <!-- 列  属性 prop => 字段名 label => 表头-->
         <el-table-column width='600px' label='标题' prop='title'></el-table-column>
-        <el-table-column align='center' label='评论状态' prop='comment_status'></el-table-column>
+        <el-table-column :formatter='stateFormatter' align='center' label='评论状态' prop='comment_status'></el-table-column>
         <el-table-column align='center' label='总评论数' prop='total_comment_count'></el-table-column>
         <el-table-column align='center' label='粉丝评论数' prop='fans_comment_count'></el-table-column>
-        <el-table-column align='center' label='操作'></el-table-column>
+        <el-table-column align='center' label='操作'>
+           <el-button size='small' type='text'>修改</el-button>
+           <el-button size='small' type='text'>关闭评论</el-button>
+        </el-table-column>
      </el-table>
   </el-card>
 </template>
@@ -33,8 +36,12 @@ export default {
       }).then(result => {
         this.list = result.data.results
       })
+    },
+    stateFormatter (row, column, cellValue, index) {
+      return cellValue ? '正常' : '关闭'
     }
   },
+
   created () {
     this.gitComment()
   },
