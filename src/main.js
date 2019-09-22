@@ -16,9 +16,7 @@ import './styles/index.less'
 import Component from './components'
 
 // 在main.js中引入axios
-import axios from 'axios'
-// 将地址的常态值设置给bsesURL
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
+import axios from './utils/axios.config'
 Vue.prototype.$axios = axios // axios赋值给全局属性
 
 Vue.config.productionTip = false

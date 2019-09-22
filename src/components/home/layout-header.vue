@@ -9,7 +9,7 @@
      <!-- 右侧 -->
      <el-col :span='4'>
        <!-- 用户头像 -->
-       <img class="head-img" :src="userInfo.photo ? userInfo.photo : defaultImg" alt="" srcset="">
+       <img class="head-img" :src="userInfo.photo ? userInfo.photo : defaultImg" >
        <!-- 下拉菜单组件 el-dropdown -->
       <el-dropdown @command='commonClick' trigger="click">
         <!-- 匿名插槽 -->
@@ -31,18 +31,15 @@
 export default {
   data () {
     return {
-      userInfo: {}, // 个人信息对对象
+      userInfo: {}, // 个人信息对象
       defaultImg: require('../../assets/img/avatar.jpg') // 转成base64
     }
   },
   methods: {
     // =====获取用户个人信息======
     getUserInfo () {
-      let token = window.localStorage.getItem('user-token')
       this.$axios({
-        url: '/user/profile',
-        // 接口要求:添加令牌
-        headers: { 'Authorization': `Bearer ${token}` }
+        url: '/user/profile'
       }).then(result => {
         this.userInfo = result.data.data // 接收对象
       })
@@ -60,10 +57,11 @@ export default {
         window.localStorage.clear() // 只能清除本项目的所有前端缓存
         this.$router.push('/login') // 跳转到登录页
       }
-    },
-    created () {
-      this.getUserInfo()
     }
+
+  },
+  created () {
+    this.getUserInfo()
   }
 }
 </script>
