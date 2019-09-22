@@ -17,7 +17,7 @@
       </el-header>
 
       <!-- 中部区域 -->
-      <el-main>
+      <el-main style="padding:0">
 
         <!-- 二级路由容器 -->
          <router-view></router-view>

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 // import Home from './views/Home.vue' // 路由级组件
 import Home from './views/home/'
 import Login from './views/login/'
+import Main from './views/home/main' // 引入 默认的二级路由
 
 Vue.use(Router)
 
@@ -15,7 +16,13 @@ export default new Router({
     }, {
       // 一级路由:主页页面
       path: '/home',
-      component: Home
+      component: Home,
+      // 挂载二级路由
+      children: [
+        {
+          path: '', // 什么都不写，默认的就是二级路由的地址
+          component: Main // 默认的二级路由
+        }]
     }, {
       // 一级路由：登录页面
       path: '/login',
