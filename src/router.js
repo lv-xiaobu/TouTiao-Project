@@ -17,7 +17,7 @@ export default new Router({
       // 一级路由:主页页面
       path: '/home',
       component: Home,
-      // 挂载二级路由
+      // ==========二级路由==========
       children: [
         {
           path: '', // 什么都不写，默认的就是二级路由的地址

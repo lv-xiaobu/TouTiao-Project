@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
+
+// 在此位置导入 permission ,因为 permission 中已经导出了 router对象 所以直接 导入 permission文件
+import router from './permission'
 
 // 引入element-ui和element-ui的样式
 import Element from 'element-ui'
