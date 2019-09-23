@@ -43,11 +43,6 @@ export default {
       }).then(result => {
         // 在 axios.config.js 中做了响应拦截器，使result.data.data => result.data
         this.userInfo = result.data // 接收对象
-      }).catch(() => {
-        this.$message({
-          type: 'warning',
-          message: '您的手机号或者验证码错误'
-        })
       })
     },
     // 公共点击事件
