@@ -28,6 +28,9 @@ export default new Router({
         }, {
           path: 'material', // 素材列表路径
           component: () => import('./views/material')
+        }, {
+          path: 'articles', // 素材列表路径
+          component: () => import('./views/articles')
         }]
     }, {
       // 一级路由：登录页面
