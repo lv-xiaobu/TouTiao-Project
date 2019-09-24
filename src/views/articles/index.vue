@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="频道列表：">
         <el-select @change='changeCondition' v-model="formData.channel_id" placeholder="请选择">
-      <!-- select选择器  label（显示值）value(存储值) -->
+          <!-- select选择器  label（显示值）value(存储值) -->
           <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -35,12 +35,12 @@
       </el-form-item>
     </el-form>
     <!-- 主体内容：没有具体模板，自己定制 -->
-    <div class="total">共找到535113条符合条件的内容</div>
+    <div class="total">共找到{{page.total}}条符合条件的内容</div>
     <!-- ===== 循环主体数据 ===== -->
     <div class="article-item" v-for="(item,index) in list" :key="index">
       <!-- 左侧 -->
       <div class="left">
-         <!-- 如果有图片的话，用图片，没有图片的话，用默认图片 -->
+        <!-- 如果有图片的话，用图片，没有图片的话，用默认图片 -->
         <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg">
         <div class="info">
           <span class="title">{{item.title}}</span>
@@ -55,6 +55,10 @@
         <span><i class="el-icon-delete"></i>删除</span>
       </div>
     </div>
+    <!-- ===== 分页组件 ===== -->
+    <el-row type='flex' justify='center' style="margin-top:10px 0">
+      <el-pagination @current-change='changePage' background layout="prev, pager, next" :total="page.total" :current-page="page.currentPage" :page-size='page.pageSize'></el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -70,24 +74,40 @@ export default {
       },
       channels: [], // 保存频道列表选项
       list: [], // 保存文章列表
-      defaultImg: require('../../assets/img/ch.jpg') // 将默认图片能转成base64
+      defaultImg: require('../../assets/img/ch.jpg'), // 将默认图片能转成base64
+      page: {
+        total: 0, // 总页数
+        currentPage: 1,
+        pageSize: 10
+      }
     }
   },
   methods: {
-    // ===== 状态变化-监听事件 =====
+    // ===== 组装请求参数 =====
+    queryArticles () {
+      // 三个条件不是一个个进行的，而是组合在一块儿搜索的
+      let params = {
+        status: this.formData.status === 5 ? null : this.formData.status, // 状态  如果为5时，就是全部，但是接口要求全部不传内容 null就相当于什么都没传
+        channel_id: this.formData.channel_id, // 频道id
+        begin_pubdate: this.formData.date.length ? this.formData.date[0] : null,
+        end_pubdate: this.formData.date.length > 1 ? this.formData.date[1] : null, // 结束时间
+        page: this.page.currentPage,
+        per_page: this.page.pageSize
+      }
+      this.getArticles(params)
+    },
+    // ===== 搜索条件状态变化 监听事件 =====
     changeCondition () {
       // alert(this.formData.status)
       // 以上 alert 得知：值改变时，formData 已经是最新的值，所以直接用 formData 的值请求
-      // 三个条件不是一个个进行的，而是组合在一块儿搜索的
-      // 组装请求参数
-      let params = {
-        // 状态  如果为5时，就是全部，但是接口要求全部不传内容 null就相当于什么都没传
-        status: this.formData.status === 5 ? null : this.formData.status,
-        channel_id: this.formData.channel_id, // 频道id
-        begin_pubdate: this.formData.date.length ? this.formData.date[0] : null, // 开始时间
-        end_pubdate: this.formData.date.length > 1 ? this.formData.date[1] : null // 结束时间
-      }
-      this.getArticles(params)
+      this.page.currentPage = 1 // 条件改变 默认会第一页
+      this.queryArticles()
+    },
+    // ===== 监听 页码改变 事件 =====
+    changePage (newPage) {
+      this.page.currentPage = newPage // 赋值最新页码
+      // 分页时要携带条件
+      this.queryArticles()
     },
     // ===== 获取文章 =====
     getArticles (params) {
@@ -95,7 +115,8 @@ export default {
         url: '/articles',
         params
       }).then(result => {
-        this.list = result.data.results
+        this.list = result.data.results // 获取文章列表
+        this.page.total = result.data.total_count // 赋值记录总数
       })
     },
     // ===== 获取频道列表 =====
@@ -149,48 +170,48 @@ export default {
 
 <style lang='less' scoped>
 .total {
-   height: 50px;
-   line-height: 50px;
-   border-bottom: 1px dashed #ccc;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px dashed #ccc;
 }
 .article-item {
-   display: flex;
-   justify-content: space-between;
-   padding: 20px 10px;
-   border-bottom:  1px solid #f2f3f5;
-   .left {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 10px;
+  border-bottom: 1px solid #f2f3f5;
+  .left {
+    display: flex;
+    img {
+      width: 180px;
+      height: 100px;
+      border-radius: 4px;
+    }
+    .info {
       display: flex;
-      img {
-         width: 180px;
-         height: 100px;
-         border-radius: 4px;
+      height: 10px;
+      flex-direction: column;
+      justify-content: space-arount;
+      margin-left: 10px;
+      .title {
+        font-size: 14px;
       }
-      .info {
-         display: flex;
-         height: 10px;
-         flex-direction: column;
-         justify-content: space-arount;
-         margin-left: 10px;
-         .title {
-            font-size:14px;
-         }
-         .status {
-            width: 70px;
-            margin: 5px 0;
-            text-align: center;
-         }
-         .date {
-            color: #999;
-            font-size: 12px;
-         }
+      .status {
+        width: 70px;
+        margin: 5px 0;
+        text-align: center;
       }
-   }
-   .right {
-      font-size: 12px;
-      span {
-         margin-right: 10px;
-         cursor:pointer
+      .date {
+        color: #999;
+        font-size: 12px;
       }
-   }
+    }
+  }
+  .right {
+    font-size: 12px;
+    span {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  }
 }
 </style>
