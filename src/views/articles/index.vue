@@ -5,27 +5,33 @@
       <template slot='title'>内容列表
       </template>
     </bread-crumb>
-    <el-form>
+    {{formData}}
+    <!-- ===== 表单 ===== -->
+    <el-form style="margin-left:50px">
       <el-form-item label="文章状态：">
         <!-- 单选框组 -->
-        <el-radio-group v-model="radio">
-          <el-radio :label="3">全部</el-radio>
-          <el-radio :label="6">草稿</el-radio>
-          <el-radio :label="9">待审核</el-radio>
-          <el-radio :label="9">审核通过</el-radio>
-          <el-radio :label="9">审核失败</el-radio>
+        <!-- v-model + :label="6" 给单选框组的每一个绑定变量 -->
+        <!-- @change事件：单选框的监听事件 -->
+        <el-radio-group @change='changeCondition' v-model="formData.status">
+          <!-- 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部 -->
+          <!-- :label中给一个不存在的值，代表默认选中 -->
+          <el-radio :label="5">全部</el-radio>
+          <el-radio :label="0">草稿</el-radio>
+          <el-radio :label="1">待审核</el-radio>
+          <el-radio :label="2">审核通过</el-radio>
+          <el-radio :label="3">审核失败</el-radio>
         </el-radio-group>
       </el-form-item>
-      <!-- select选择器  label（显示值）value(存储值) -->
       <el-form-item label="频道列表：">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-          </el-option>
+        <el-select @change='changeCondition' v-model="formData.channel_id" placeholder="请选择">
+      <!-- select选择器  label（显示值）value(存储值) -->
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="时间选择：">
-        <el-date-picker v-model="value2" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期">
-        </el-date-picker>
+        <!-- el-date-picker :日期选择 -->
+        <!-- value-format指定绑定值的格式 -->
+        <el-date-picker @change='changeCondition' v-model="formData.date" value-format='yyyy-MM-dd' type="daterange" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
       </el-form-item>
     </el-form>
     <!-- 主体内容：没有具体模板，自己定制 -->
@@ -39,7 +45,7 @@
         <div class="info">
           <span class="title">{{item.title}}</span>
           <!-- statusStyle:控制颜色   statusText：控制显示文本-->
-          <el-tag :type='item.status | statusStyle' class="stauts">{{item.status | statusText}}</el-tag>
+          <el-tag :type='item.status | statusStyle' class="status">{{item.status | statusText}}</el-tag>
           <span class="date">{{item.pubdate}}</span>
         </div>
       </div>
@@ -56,25 +62,57 @@
 export default {
   data () {
     return {
-      list: [],
+      // 提交表单时需要的参数，参考接口文档，定义属性
+      formData: {
+        status: 5, // 文章状态
+        channel_id: null, // 频道id
+        date: [] // 时间
+      },
+      channels: [], // 保存频道列表选项
+      list: [], // 保存文章列表
       defaultImg: require('../../assets/img/ch.jpg') // 将默认图片能转成base64
     }
   },
   methods: {
+    // ===== 状态变化-监听事件 =====
+    changeCondition () {
+      // alert(this.formData.status)
+      // 以上 alert 得知：值改变时，formData 已经是最新的值，所以直接用 formData 的值请求
+      // 三个条件不是一个个进行的，而是组合在一块儿搜索的
+      // 组装请求参数
+      let params = {
+        // 状态  如果为5时，就是全部，但是接口要求全部不传内容 null就相当于什么都没传
+        status: this.formData.status === 5 ? null : this.formData.status,
+        channel_id: this.formData.channel_id, // 频道id
+        begin_pubdate: this.formData.date.length ? this.formData.date[0] : null, // 开始时间
+        end_pubdate: this.formData.date.length > 1 ? this.formData.date[1] : null // 结束时间
+      }
+      this.getArticles(params)
+    },
     // ===== 获取文章 =====
-    getArticles () {
+    getArticles (params) {
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        params
       }).then(result => {
         this.list = result.data.results
+      })
+    },
+    // ===== 获取频道列表 =====
+    getChannels () {
+      this.$axios({
+        url: '/channels'
+      }).then(result => {
+        this.channels = result.data.channels
       })
     }
   },
   created () {
+    this.getChannels()
     this.getArticles()
   },
   // ===== 过滤器 =====
-  // 处理 发表状态item.stauts 的显示
+  // 处理 发表状态item.status 的显示
   // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
   filters: {
     statusText (value) {
@@ -136,7 +174,7 @@ export default {
          .title {
             font-size:14px;
          }
-         .stauts {
+         .status {
             width: 70px;
             margin: 5px 0;
             text-align: center;
