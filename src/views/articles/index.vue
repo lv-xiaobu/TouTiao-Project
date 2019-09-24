@@ -34,11 +34,12 @@
     <div class="article-item" v-for="(item,index) in list" :key="index">
       <!-- 左侧 -->
       <div class="left">
-        <img src="../../assets/img/ch.jpg">
+         <!-- 如果有图片的话，用图片，没有图片你的话，用默认图片 -->
+        <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg">
         <div class="info">
-          <span class="title">f发男方女方年份</span>
+          <span class="title">{{item.title}}</span>
           <el-tag class="stauts">以发表</el-tag>
-          <span class="date">2019-09-23 11：23：21</span>
+          <span class="date">{{item.pubdate}}</span>
         </div>
       </div>
       <!-- 右侧 -->
@@ -54,10 +55,22 @@
 export default {
   data () {
     return {
-      list: [1, 2]
+      list: [],
+      defaultImg: require('../../assets/img/ch.jpg') // 将默认图片能转成base64
     }
   },
-  methods: {},
+  methods: {
+    getArticles () {
+      this.$axios({
+        url: '/articles'
+      }).then(result => {
+        this.list = result.data.results
+      })
+    }
+  },
+  created () {
+    this.getArticles()
+  },
   components: {}
 }
 </script>
@@ -91,6 +104,7 @@ export default {
          }
          .stauts {
             width: 60px;
+            margin: 5px 0;
             text-align: center;
          }
          .date {
