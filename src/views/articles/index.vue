@@ -52,7 +52,7 @@
       <!-- 右侧 -->
       <div class="right">
         <span><i class="el-icon-edit"></i>修改</span>
-        <span><i class="el-icon-delete"></i>删除</span>
+        <span @click="delArticles(item.id)"><i class="el-icon-delete"></i>删除</span>
       </div>
     </div>
     <!-- ===== 分页组件 ===== -->
@@ -125,6 +125,19 @@ export default {
         url: '/channels'
       }).then(result => {
         this.channels = result.data.channels
+      })
+    },
+    // ===== 删除文章 =====
+    delArticles (id) {
+      this.$confirm('您确定要删除此文章吗').then(() => {
+      // id超过了安全数字限制 被jsonbigint转成了bigNUmber类型 要想变成字符串
+      // id.toString()
+        this.$axios({
+          url: `/articles/${id.toString()}`,
+          method: 'delete'
+        }).then(() => {
+          this.queryArticles() // 带条件的查询
+        })
       })
     }
   },
