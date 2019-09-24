@@ -34,11 +34,12 @@
     <div class="article-item" v-for="(item,index) in list" :key="index">
       <!-- 左侧 -->
       <div class="left">
-         <!-- 如果有图片的话，用图片，没有图片你的话，用默认图片 -->
+         <!-- 如果有图片的话，用图片，没有图片的话，用默认图片 -->
         <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg">
         <div class="info">
           <span class="title">{{item.title}}</span>
-          <el-tag class="stauts">以发表</el-tag>
+          <!-- statusStyle:控制颜色   statusText：控制显示文本-->
+          <el-tag :type='item.status | statusStyle' class="stauts">{{item.status | statusText}}</el-tag>
           <span class="date">{{item.pubdate}}</span>
         </div>
       </div>
@@ -60,6 +61,7 @@ export default {
     }
   },
   methods: {
+    // ===== 获取文章 =====
     getArticles () {
       this.$axios({
         url: '/articles'
@@ -71,7 +73,39 @@ export default {
   created () {
     this.getArticles()
   },
-  components: {}
+  // ===== 过滤器 =====
+  // 处理 发表状态item.stauts 的显示
+  // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
+  filters: {
+    statusText (value) {
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '审核通过'
+        case 3:
+          return '审核失败'
+        case 4:
+          return '已删除'
+      }
+    },
+    statusStyle (value) {
+      switch (value) {
+        case 0:
+          return 'warning'
+        case 1:
+          return 'info'
+        case 2:
+          return 'success'
+        case 3:
+          return 'danger'
+        case 4:
+          return 'danger'
+      }
+    }
+  }
 }
 </script>
 
@@ -103,7 +137,7 @@ export default {
             font-size:14px;
          }
          .stauts {
-            width: 60px;
+            width: 70px;
             margin: 5px 0;
             text-align: center;
          }
