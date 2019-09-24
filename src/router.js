@@ -22,7 +22,7 @@ export default new Router({
         {
           path: '', // 什么都不写，默认的就是二级路由的地址
           component: Main // 默认的二级路由
-        }, {
+        }, { // path: '/home/comment' 完整写法
           path: 'comment', // 评论列表路径
           component: () => import('./views/comment')
         }, {
@@ -31,6 +31,9 @@ export default new Router({
         }, {
           path: 'articles', // 素材列表路径
           component: () => import('./views/articles')
+        }, {
+          path: 'publish', // 素材列表路径
+          component: () => import('./views/publish')
         }]
     }, {
       // 一级路由：登录页面

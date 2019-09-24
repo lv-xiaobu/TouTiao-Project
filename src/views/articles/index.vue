@@ -5,7 +5,7 @@
       <template slot='title'>内容列表
       </template>
     </bread-crumb>
-    {{formData}}
+    <!-- {{formData}} -->
     <!-- ===== 表单 ===== -->
     <el-form style="margin-left:50px">
       <el-form-item label="文章状态：">
