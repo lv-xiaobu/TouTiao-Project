@@ -20,6 +20,10 @@
                    <el-radio :label='-1'>自动</el-radio>
                </el-radio-group>
            </el-form-item>
+           <!-- 封面组件 -->
+           <!-- 封面组件写在publish组件里面，是父子关系，获取image长度的话，用 props -->
+           <!-- 传递父组件 formData.cover.images 的值 给子组件 :images  -->
+           <cover-image :images='formData.cover.images'></cover-image>
            <el-form-item prop='channel_id' label="频道">
                <el-select v-model="formData.channel_id">
                   <!-- select选择器  label（显示值）value(存储值) -->
