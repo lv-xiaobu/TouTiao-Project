@@ -29,10 +29,13 @@ export default new Router({
           path: 'material', // 素材列表路径
           component: () => import('./views/material')
         }, {
-          path: 'articles', // 素材列表路径
+          path: 'articles', // 内容列表路径
           component: () => import('./views/articles')
         }, {
-          path: 'publish', // 素材列表路径
+          path: 'publish', // 发表文章路径
+          component: () => import('./views/publish')
+        }, {
+          path: 'publish/:articleId', // 修改文章路径 动态路由传参
           component: () => import('./views/publish')
         }]
     }, {

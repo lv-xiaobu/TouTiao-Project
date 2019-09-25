@@ -51,7 +51,7 @@
       </div>
       <!-- 右侧 -->
       <div class="right">
-        <span><i class="el-icon-edit"></i>修改</span>
+        <span @click="goEdit(item.id)"><i class="el-icon-edit"></i>修改</span>
         <span @click="delArticles(item.id)"><i class="el-icon-delete"></i>删除</span>
       </div>
     </div>
@@ -126,6 +126,12 @@ export default {
       }).then(result => {
         this.channels = result.data.channels
       })
+    },
+    // ===== 编辑文章 =====
+    goEdit (id) {
+      // 使用动态路由传参，
+      // id超过了安全数字限制 被jsonbigint转成了bigNUmber类型 要想变成字符串
+      this.$router.push(`/home/publish/${id.toString()}`)
     },
     // ===== 删除文章 =====
     delArticles (id) {

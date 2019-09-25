@@ -69,14 +69,25 @@ export default {
         this.channels = result.data.channels // 获取channels频道
       })
     },
-    // ===== 发布文章 =====
+    // 根据文章id获取文章详情
+    getArticleByid (articleId) {
+      this.$axios({
+        // id 在内容列表传出的时候，已经把 id 从大数字类型转换成字符串类型了
+        url: `articles/${articleId}`
+      }).then((result) => {
+        this.formData = result.data
+      })
+    },
+    // ===== 判断是修改文章还是发表文章 =====
     publish (draft) {
-      debugger
       this.$refs.publishForm.validate((isOk) => {
         if (isOk) {
+          // article_id  有=>编辑文章 没有=>发表文章
+          let { articleId } = this.$route.params
+          // ===== 根据条件接口切换两种模式：编辑/发布文章 =====
           this.$axios({
-            url: '/articles',
-            method: 'post',
+            url: articleId ? `/articles/${articleId}` : '/articles',
+            method: articleId ? 'put' : 'post',
             params: { draft: draft }, // 是否存为草稿（true 为草稿,false 为正常）
             data: this.formData
           }).then(() => {
@@ -89,6 +100,9 @@ export default {
   },
   created () {
     this.getChannels() // 获取频道
+    // 修改文章：在页面初始化时，拿到文章的id
+    let { articleId } = this.$route.params // article_id  有=>编辑文章 没有=>发表文章
+    articleId && this.getArticleByid(articleId) // 短路表达式，表示判断意思
   }
 }
 
