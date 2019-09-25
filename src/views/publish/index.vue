@@ -2,33 +2,32 @@
   <el-card>
     <!-- 面包屑组件 -->
     <bread-crumb slot='header'>
-      <template slot='title'>发表文章
-      </template>
+      <template slot='title'>发表文章</template>
     </bread-crumb>
     <!-- {{channels}} -->
-    <el-form style='margin-left:100px' label-width="100px">
-           <el-form-item label="标题">
-               <el-input style='width:400px'></el-input>
+    <el-form ref="publishForm" :model="formData" :rules='rules' style='margin-left:100px' label-width="100px">
+           <el-form-item prop='title' label="标题">
+               <el-input v-model="formData.title" style='width:400px'></el-input>
            </el-form-item>
-           <el-form-item label="内容">
-               <el-input  type="textarea" :rows="4"  placeholder="请输入内容"></el-input>
+           <el-form-item prop='content' label="内容">
+               <el-input v-model="formData.content" type="textarea" :rows="4"  placeholder="请输入内容"></el-input>
            </el-form-item>
-           <el-form-item label="封面">
-               <el-radio-group>
-                   <el-radio>单选</el-radio>
-                   <el-radio>三图</el-radio>
-                   <el-radio>无图</el-radio>
-                   <el-radio>自动</el-radio>
+           <el-form-item prop='cover' label="封面">
+               <el-radio-group v-model="formData.cover.type">
+                   <el-radio :label='1'>单选</el-radio>
+                   <el-radio :label='3'>三图</el-radio>
+                   <el-radio :label='0'>无图</el-radio>
+                   <el-radio :label='-1'>自动</el-radio>
                </el-radio-group>
            </el-form-item>
-           <el-form-item label="频道">
-               <el-select>
+           <el-form-item prop='channel_id' label="频道">
+               <el-select v-model="formData.channel_id">
                   <!-- select选择器  label（显示值）value(存储值) -->
                   <el-option v-for='item in channels' :key='item.id' :label="item.name" :value="item.id"></el-option>
                </el-select>
            </el-form-item>
            <el-form-item>
-               <el-button type='primary'>发布文章</el-button>
+               <el-button type='primary' @click='publish'>发布文章</el-button>
                <el-button>存入草稿</el-button>
            </el-form-item>
 
@@ -40,16 +39,40 @@
 export default {
   data () {
     return {
-      channels: []
+      channels: [],
+      formData: {
+        title: '', // 标题
+        content: '', // 内容
+        channel_id: null, // 频道id
+        cover: {
+          type: 0,
+          images: []
+        } // 封面
+      },
+      // ===== 校验规则 =====
+      rules: {
+        title: [{ required: true, message: '标题不为空' }],
+        content: [{ required: true, message: '内容不为空' }],
+        channel_id: [{ required: true, message: '频道不为空' }]
+      }
     }
   },
   methods: {
-    //   获取频道数据
+    // ===== 获取频道数据 =====
     getChannels () {
       this.$axios({
         url: '/channels'
       }).then(result => {
         this.channels = result.data.channels // 获取channels频道
+      })
+    },
+    // ===== 发布文章 =====
+    publish () {
+      debugger
+      this.$refs.publishForm.validate((isOk) => {
+        if (isOk) {
+
+        }
       })
     }
   },
