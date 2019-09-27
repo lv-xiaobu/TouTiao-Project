@@ -37,6 +37,9 @@ export default new Router({
         }, {
           path: 'publish/:articleId', // 修改文章路径 动态路由传参
           component: () => import('./views/publish')
+        }, {
+          path: 'account', // 账户信息路径
+          component: () => import('./views/account')
         }]
     }, {
       // 一级路由：登录页面
