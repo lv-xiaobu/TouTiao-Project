@@ -28,6 +28,8 @@
 </template>
 
 <script>
+// 导入公共vue实例
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -63,6 +65,11 @@ export default {
   },
   created () {
     this.getUserInfo()
+    // 一旦监听到事件 就会执行后面的函数
+    eventBus.$on('uploadUserInfo', () => {
+      // 当监听到，账户信息发生改变时，重新获取数据
+      this.getUserInfo()
+    })
   }
 }
 </script>

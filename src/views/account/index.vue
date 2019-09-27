@@ -36,6 +36,8 @@
 </template>
 
 <script>
+// 导入公共vue实例
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -59,6 +61,8 @@ export default {
         method: 'patch',
         data: data
       }).then(result => {
+        // 提示别的组件要更新数据
+        eventBus.$emit('uploadUserInfo') // 抛出一个事件,在头部页面中，通过$on监听事件，接收这个事件
         // 将成功上传的头像，重新更新给当前页面的数据
         this.formData.photo = result.data.photo
         this.loading = false
@@ -73,7 +77,9 @@ export default {
             method: 'patch',
             data: this.formData
           }).then(() => {
-            //   成功提示消息
+            // 提示别的组件要更新数据
+            eventBus.$emit('uploadUserInfo') // 抛出一个事件,在头部页面中，通过$on监听事件，接收这个事件
+            // 成功提示消息
             this.$message({ message: '保存成功', type: 'success' })
           })
         }
