@@ -1,5 +1,8 @@
 <template>
-  <el-card>
+  <el-card v-loading='loading'
+  element-loading-text="丫的，等一会儿"
+  element-loading-spinner="el-icon-loading"
+  element-loading-background="rgba(0, 0, 0, 0.8)">
     <!-- header具名是给卡片的 -->
     <bread-crumb slot="header">
       <!-- title具名 是面包屑组件的具名 -->
@@ -19,11 +22,16 @@
        <el-form-item label='手机号'>
           <el-input placeholder='我是你爸爸' disabled v-model="formData.mobile" style='width:300px'></el-input>
        </el-form-item>
-       <el-form-item lable=''>
+       <el-form-item>
           <el-button @click="saveUser" type='primary'>保存信息</el-button>
        </el-form-item>
     </el-form>
+    <!-- 上传图片 -->
+    <!-- :show-file-list='false'  是否显示已上传文件列表 -->
+    <!-- :http-request='函数' 上传 -->
+    <el-upload action='' :show-file-list='false' :http-request='uploadImg'>
     <img class="head-img" :src="formData.photo ? formData.photo : defaultImg" alt="" srcset="">
+    </el-upload>
   </el-card>
 </template>
 
@@ -31,6 +39,7 @@
 export default {
   data () {
     return {
+      loading: false, // 加载进程
       formData: {},
       defaultImg: require('../../assets/img/cai.gif'),
       accountRules: {
@@ -40,6 +49,21 @@ export default {
     }
   },
   methods: {
+    // ===== 上传图片 =====
+    uploadImg (params) {
+      this.loading = true
+      let data = new FormData()
+      data.append('photo', params.file) // 取出文件，放在参数中
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data: data
+      }).then(result => {
+        // 将成功上传的头像，重新更新给当前页面的数据
+        this.formData.photo = result.data.photo
+        this.loading = false
+      })
+    },
     // ===== 保存账户信息 =====
     saveUser () {
       this.$refs.accountformDate.validate((isOK) => {
@@ -57,10 +81,12 @@ export default {
     },
     // ===== 获取账户信息 =====
     getUserInfo () {
+      this.loading = true
       this.$axios({
         url: '/user/profile'
       }).then(result => {
         this.formData = result.data
+        this.loading = false
       })
     }
   },
