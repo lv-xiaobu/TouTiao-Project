@@ -47,6 +47,9 @@ export default new Router({
         }, {
           path: 'gradata', // 图文数据路径
           component: () => import('./views/fans')
+        }, {
+          path: 'async', // 图文数据路径
+          component: () => import('./views/async')
         }]
     }, {
       // 一级路由：登录页面
