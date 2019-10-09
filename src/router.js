@@ -12,7 +12,10 @@ export default new Router({
     // ===========一级路由============
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/home' // 重定向
+    }, {
+      path: '*', // 匹配任何地址，但是其他的可以匹配，优先匹配其他
+      component: () => import('./views/404')
     }, {
       // 一级路由:主页页面
       path: '/home',
@@ -22,7 +25,8 @@ export default new Router({
         {
           path: '', // 什么都不写，默认的就是二级路由的地址
           component: Main // 默认的二级路由
-        }, { // path: '/home/comment' 完整写法
+        }, {
+          // path: '/home/comment' 完整写法
           path: 'comment', // 评论列表路径
           component: () => import('./views/comment')
         }, {
