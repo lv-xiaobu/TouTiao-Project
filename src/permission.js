@@ -2,9 +2,18 @@
 // 引入router.js文件，得到 router对象
 import router from './router'
 
-// 全局前置守卫
+// ========== 页面进度条 ==========
+import nprogress from 'nprogress'// 进度条
+import 'nprogress/nprogress.css' // 这个样式必须引入
+// 简单配置
+nprogress.inc(0.2)
+nprogress.configure({ easing: 'ease', speed: 500, showSpinner: false })
+
+// ========== 全局前置守卫 ==========
 // 往返都是路由对象。必须调用`next`
 router.beforeEach((to, from, next) => {
+  nprogress.start()// 开启页面进度条
+
   // 判断 拦截范围
   // startsWith：以。。。。为开头
   if (to.path.startsWith('/home')) {
@@ -21,5 +30,9 @@ router.beforeEach((to, from, next) => {
   }
 })
 
+// ========== 全局后置守卫 ==========
+router.afterEach(function () {
+  nprogress.done()// 关闭进度条
+})
 // 导出 router
 export default router
