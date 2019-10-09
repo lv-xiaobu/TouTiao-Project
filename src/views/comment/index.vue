@@ -57,18 +57,33 @@ export default {
   },
   methods: {
     // ===== 获取评论列表
-    getComment () {
+    // getComment () {
+    //   //  发送请求前 显示进度特效
+    //   this.loading = true
+    //   // 传统 异步 方案
+    //   // this.$axios({
+    //   //   url: '/articles',
+    //   //   params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize } // 路径参数 也是query参数
+    //   // }).then(result => {
+    //   //   this.list = result.data.results
+    //   //   this.page.total = result.data.total_count // 把总条数给 分页组件的总条数
+    //   //   // 请求结束时，关闭进度特效
+    //   //   this.loading = false
+    //   // })
+    // },
+
+    // ===== 获取评论列表
+    async getComment () {
       //  发送请求前 显示进度特效
       this.loading = true
-      this.$axios({
+      let result = await this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.page.currentPage, per_page: this.page.pageSize } // 路径参数 也是query参数
-      }).then(result => {
-        this.list = result.data.results
-        this.page.total = result.data.total_count // 把总条数给 分页组件的总条数
-        // 请求结束时，关闭进度特效
-        this.loading = false
       })
+      this.list = result.data.results
+      this.page.total = result.data.total_count // 把总条数给 分页组件的总条数
+      // 请求结束时，关闭进度特效
+      this.loading = false
     },
     stateFormatter (row, column, cellValue, index) {
       return cellValue ? '正常' : '关闭'
@@ -82,20 +97,41 @@ export default {
     },
 
     // ===== 打开或者关闭  row 当前行数据
-    closeOrOpen (row) {
+    // closeOrOpen (row) {
+    //   let mess = row.comment_status ? '关闭' : '打开' // 得到打开或者关闭
+    //   this.$confirm(`您确定要${mess}评论?`).then(() => {
+    //     // 确定调用接口
+    //     this.$axios({
+    //       url: 'comments/status', // 地址
+    //       method: 'put',
+    //       params: { article_id: row.id.toString() }, // 路径参数
+    //       data: { allow_comment: !row.comment_status } // body参数  调用状态和当前状态是反着的 所以取反
+    //     }).then(() => {
+    //       // 成功之后一定会进入then
+    //       this.getComment() // 重新拉取数据
+    //     })
+    //   })
+    // }
+
+    // ===== 打开或者关闭  row 当前行数据
+    async closeOrOpen (row) {
       let mess = row.comment_status ? '关闭' : '打开' // 得到打开或者关闭
-      this.$confirm(`您确定要${mess}评论?`).then(() => {
+      try {
+        // 正常逻辑 如果正常逻辑执行时，
+        await this.$confirm(`您确定要${mess}评论?`)
         // 确定调用接口
-        this.$axios({
+        await this.$axios({
           url: 'comments/status', // 地址
           method: 'put',
           params: { article_id: row.id.toString() }, // 路径参数
           data: { allow_comment: !row.comment_status } // body参数  调用状态和当前状态是反着的 所以取反
-        }).then(() => {
-          // 成功之后一定会进入then
-          this.getComment() // 重新拉取数据
         })
-      })
+        // 成功之后一定会进入then
+        this.getComment() // 重新拉取数据
+      } catch (error) {
+        // 报错 会进入catch错误信息存在error.message
+
+      }
     }
   },
 
