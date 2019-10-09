@@ -40,6 +40,9 @@ export default new Router({
         }, {
           path: 'account', // 账户信息路径
           component: () => import('./views/account')
+        }, {
+          path: 'gradata', // 图文数据路径
+          component: () => import('./views/fans')
         }]
     }, {
       // 一级路由：登录页面
